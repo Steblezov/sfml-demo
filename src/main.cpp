@@ -5,8 +5,9 @@ using namespace std;
 
 int main() {
 	sf::RenderWindow window(sf::VideoMode(640, 480),"demo");
-	window.setFramerateLimit(60);
-	int x = 40;
+	window.setFramerateLimit(120);
+	int x = 320;
+	int y = 240;
 	while (window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -20,6 +21,12 @@ int main() {
 				if (event.key.code == sf::Keyboard::Left) {
 					--x;
 				}
+				if (event.key.code == sf::Keyboard::Up) {
+					--y;
+				}
+				if (event.key.code == sf::Keyboard::Down) {
+					++y;
+				}
 				if (event.key.code == sf::Keyboard::Escape) {
 					window.close();
 				}
@@ -30,7 +37,7 @@ int main() {
 		window.clear();
 		sf::RectangleShape shape(sf::Vector2f(20,20));
 		shape.setFillColor(sf::Color::Blue);
-		shape.setPosition(x, 50);
+		shape.setPosition(x, y);
 		window.draw(shape);
 		window.display();
 	}
