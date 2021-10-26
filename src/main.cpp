@@ -23,12 +23,18 @@ void UpdatePhysics(bool right,bool left, sf::RectangleShape& shape) {
 
 int main() {
 	sf::RenderWindow window(sf::VideoMode(640, 480),"demo");
-	window.setFramerateLimit(120);
+	window.setFramerateLimit(60);
 	int x = 320;
 	int y = 280;
 	sf::RectangleShape shape(sf::Vector2f(20, 20));
 	shape.setPosition(x, y);
 	shape.setFillColor(sf::Color::Blue);
+
+	sf::Texture texture;
+	texture.loadFromFile("C:\\Users\\Alexandr\\Desktop\\Projects\\sfml-demo\\sfml-demo\\image.png");
+	texture.setSmooth(true);
+	sf::Sprite sprite(texture, sf::IntRect(0, 0, 640, 20));
+	sprite.setPosition(0, 300);
 
 	const Duration kUpdatePeriod = std::chrono::milliseconds(10);
 	auto update_timestamp = Now();
@@ -62,14 +68,11 @@ int main() {
 
 		window.clear(sf::Color::White);
 		
-		sf::Texture texture;
-		texture.loadFromFile("C:\\Users\\Alexandr\\Desktop\\Projects\\sfml-demo\\sfml-demo\\image.png");
-		texture.setSmooth(true);
-		sf::Sprite sprite(texture, sf::IntRect(0, 0, 640, 20));
-		sprite.setPosition(0,300);
+		
 		window.draw(sprite);
 
 		window.draw(shape);
+
 		window.display();
 	}
 }
