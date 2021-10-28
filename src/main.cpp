@@ -8,29 +8,35 @@ using Timestamp = Clock::time_point;
 using Duration = Timestamp::duration;
 
 inline Timestamp Now() { return Clock::now(); }
-int x1 = 320;
-int r = 0;
-void UpdatePhysics(bool right, bool left,bool space, sf::RectangleShape& shape) {
+
+
+
+void UpdatePhysics(int& x, int& y, bool right, bool left,int& space, sf::RectangleShape& shape) { 
+	
+	
 	if (right == true) {
 		shape.move(1, 0);
-		++x1;
+		++x;
 	}
 	if (left == true) {
 		shape.move(-1, 0);
-		--x1;
-	}
-	if (space == 1) {
-		shape.move(0, -1);
-		++r;
+		--x;
 	}
 	
-	if (space == 2) {
-		while (r != 0) {
-			shape.move(0, 1);
-			--r;
-		}
+
+	if (space == 1 && y != 320) {
+		shape.move(0, -1);
+		++y;
 	}
+	if (space == 2) {
+		shape.move(0, 1);
+		--y;
+	}
+	if (y == 280)
+		space = 0;
+	
 }
+
 
 int main() {
 	sf::RenderWindow window(sf::VideoMode(640, 480), "demo");
@@ -52,7 +58,9 @@ int main() {
 
 	bool right = false;
 	bool left = false;
-	bool  space = false;
+	int  space = 0;
+	int x_shape = 320;
+	int y_shape = 280;
 
 	const Duration kUpdatePeriod = std::chrono::milliseconds(10);
 	auto update_timestamp = Now();
@@ -71,7 +79,7 @@ int main() {
 					left = true;
 				}
 				if (event.key.code == sf::Keyboard::Space) {
-					space = true;
+					space = 1;
 				}
 			}
 
@@ -82,12 +90,13 @@ int main() {
 				if (event.key.code == sf::Keyboard::Left) {
 					left = false;
 				}
-				if (event.key.code == sf::Keyboard::Space) {
-					space = false;
+				
+			    if (event.key.code == sf::Keyboard::Space ) {
+					space = 2;
 				}
+				
 			}
 		}
-
 		if (Now() < update_timestamp) {
 			std::this_thread::sleep_until(update_timestamp);
 		}
@@ -97,7 +106,7 @@ int main() {
 
 		while (current_time >= update_timestamp) {
 			update_timestamp += kUpdatePeriod;
-			UpdatePhysics(right, left, space, shape);
+			UpdatePhysics(x_shape,y_shape,right, left, space, shape);
 		}
 		window.clear(sf::Color::White);
 
