@@ -11,6 +11,10 @@ inline Timestamp Now() { return Clock::now(); }
 
 
 
+
+
+
+
 void UpdatePhysics(int& x, int& y, bool right, bool left,int& space, sf::RectangleShape& shape) { 
 	
 	
@@ -39,6 +43,19 @@ void UpdatePhysics(int& x, int& y, bool right, bool left,int& space, sf::Rectang
 
 
 int main() {
+	const int map_height = 8;
+	const int map_width= 10;
+	sf::String map[map_height]{
+	"0000000000",
+	"0        0",
+	"0        0",
+	"0        0",
+	"0        0",
+	"0        0",
+	"0        0",
+	"0000000000",
+	};
+
 	sf::RenderWindow window(sf::VideoMode(640, 480), "demo");
 
 	window.setFramerateLimit(60);
@@ -48,13 +65,13 @@ int main() {
 
 	sf::RectangleShape shape(sf::Vector2f(20, 20));
 	shape.setPosition(x, y);
-	shape.setFillColor(sf::Color::Blue);
+	shape.setFillColor(sf::Color::Green);
 
-	sf::Texture texture;
-	texture.loadFromFile("C:\\Users\\Alexandr\\Desktop\\Projects\\sfml-demo\\sfml-demo\\image.png");
-	texture.setSmooth(true);
-	sf::Sprite sprite(texture, sf::IntRect(0, 0, 640, 20));
-	sprite.setPosition(0, 300);
+	sf::Image map_image;
+	map_image.loadFromFile("C:\\Users\\Alexandr\\Desktop\\Projects\\sfml-demo\\sfml-demo\\image.png");
+	sf::Texture texture_map;
+	texture_map.loadFromImage(map_image);
+	sf::Sprite s_map(texture_map);
 
 	bool right = false;
 	bool left = false;
@@ -96,6 +113,7 @@ int main() {
 				}
 				
 			}
+			
 		}
 		if (Now() < update_timestamp) {
 			std::this_thread::sleep_until(update_timestamp);
@@ -109,12 +127,19 @@ int main() {
 			UpdatePhysics(x_shape,y_shape,right, left, space, shape);
 		}
 		window.clear(sf::Color::White);
+		for (int i = 0; i < map_height; i++)
+			for (int j = 0; j < map_width; j++)
+			{
+				if (map[i][j] == ' ')  s_map.setTextureRect(sf::IntRect(64, 0, 64, 64)); 
+				if (map[i][j] == '0') s_map.setTextureRect(sf::IntRect(128, 0, 64, 64));
 
 
-		window.draw(sprite);
+				s_map.setPosition(j * 64, i * 64);
+				window.draw(s_map);
+			}
+
 
 		window.draw(shape);
-
 		window.display();
 	}
 }
