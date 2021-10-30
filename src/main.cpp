@@ -2,6 +2,8 @@
 #include<SFML/Graphics.hpp>
 #include <chrono>
 #include <thread>
+#include "windows.h"
+
 
 using Clock = std::chrono::steady_clock;
 using Timestamp = Clock::time_point;
@@ -15,9 +17,8 @@ inline Timestamp Now() { return Clock::now(); }
 
 
 
-void UpdatePhysics(int& x, int& y, bool right, bool left,int& space, sf::RectangleShape& shape) { 
-	
-	
+void UpdatePhysics(int& x, int& y, bool right, bool left, bool up,bool down, sf::RectangleShape& shape, bool& over) {
+		
 	if (right == true) {
 		shape.move(1, 0);
 		++x;
@@ -26,19 +27,26 @@ void UpdatePhysics(int& x, int& y, bool right, bool left,int& space, sf::Rectang
 		shape.move(-1, 0);
 		--x;
 	}
-	
-
-	if (space == 1 && y != 320) {
+	if (up == true) {
 		shape.move(0, -1);
 		++y;
 	}
-	if (space == 2) {
+	if (down == true) {
 		shape.move(0, 1);
 		--y;
 	}
-	if (y == 280)
-		space = 0;
-	
+	if (y == 500) {
+		over = true;
+	}
+	if (y == 128) {
+		over = true;
+	}
+	if (x == 64) {
+		over = true;
+	}
+	if (x == 560) {
+		over = true;
+	}
 }
 
 
@@ -55,6 +63,8 @@ int main() {
 	"0        0",
 	"0000000000",
 	};
+
+
 
 	sf::RenderWindow window(sf::VideoMode(640, 480), "demo");
 
@@ -75,19 +85,32 @@ int main() {
 
 	bool right = false;
 	bool left = false;
-	int  space = 0;
+	bool up = false;
+	bool down = false;
 	int x_shape = 320;
 	int y_shape = 280;
+
+	sf::Text gameOver;
+	sf::Font font;
+	font.loadFromFile("C:\\Users\\Alexandr\\Desktop\\Projects\\sfml-demo\\sfml-demo\\CimeroPro.ttf");
+	gameOver.setFont(font);
+	gameOver.setString("GameOver");
+	gameOver.setCharacterSize(50);
+	gameOver.setFillColor(sf::Color::Black);
+	gameOver.setStyle(sf::Text::Bold | sf::Text::Underlined);
+	gameOver.setPosition(x, y);
+	bool over = false;
 
 	const Duration kUpdatePeriod = std::chrono::milliseconds(10);
 	auto update_timestamp = Now();
 	while (window.isOpen()) {
 		sf::Event event;
+		
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
 				window.close();
+				
 			}
-
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Right) {
 					right = true;
@@ -95,8 +118,11 @@ int main() {
 				if (event.key.code == sf::Keyboard::Left) {
 					left = true;
 				}
-				if (event.key.code == sf::Keyboard::Space) {
-					space = 1;
+				if (event.key.code == sf::Keyboard::Up) {
+					up = true;
+				}
+				if (event.key.code == sf::Keyboard::Down) {
+					down = true;
 				}
 			}
 
@@ -107,14 +133,17 @@ int main() {
 				if (event.key.code == sf::Keyboard::Left) {
 					left = false;
 				}
-				
-			    if (event.key.code == sf::Keyboard::Space ) {
-					space = 2;
+				if (event.key.code == sf::Keyboard::Up) {
+					up = false;
+				}
+				if (event.key.code == sf::Keyboard::Down) {
+					down = false;
 				}
 				
 			}
 			
 		}
+		
 		if (Now() < update_timestamp) {
 			std::this_thread::sleep_until(update_timestamp);
 		}
@@ -124,7 +153,7 @@ int main() {
 
 		while (current_time >= update_timestamp) {
 			update_timestamp += kUpdatePeriod;
-			UpdatePhysics(x_shape,y_shape,right, left, space, shape);
+			UpdatePhysics(x_shape,y_shape,right, left, up, down, shape, over);
 		}
 		window.clear(sf::Color::White);
 		for (int i = 0; i < map_height; i++)
@@ -137,9 +166,18 @@ int main() {
 				s_map.setPosition(j * 64, i * 64);
 				window.draw(s_map);
 			}
-
-
+		
+		
 		window.draw(shape);
+		if (over == true) {
+			window.draw(gameOver);
+			sf::Clock clock;
+			if (clock.getElapsedTime() >= sf::seconds(1)) {
+				window.close();
+			}
+
+		}
+		
 		window.display();
 	}
 }
