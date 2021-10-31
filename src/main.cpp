@@ -17,23 +17,31 @@ inline Timestamp Now() { return Clock::now(); }
 
 
 
-void UpdatePhysics(int& x, int& y, bool right, bool left, bool up,bool down, sf::RectangleShape& shape, bool& over) {
-		
+void UpdatePhysics(int& x, int& y, bool right, bool left, bool up,bool down, sf::Sprite& sneak_head, bool& over) {
 	if (right == true) {
-		shape.move(1, 0);
+		sneak_head.move(1, 0);
 		++x;
+		sneak_head.setRotation(90);
+		
+
 	}
 	if (left == true) {
-		shape.move(-1, 0);
+		sneak_head.move(-1, 0);
 		--x;
+		sneak_head.setRotation(-90);
+		
 	}
 	if (up == true) {
-		shape.move(0, -1);
+		sneak_head.move(0, -1);
 		++y;
+		sneak_head.setRotation(360);
+		
 	}
 	if (down == true) {
-		shape.move(0, 1);
+		sneak_head.move(0, 1);
 		--y;
+		sneak_head.setRotation(-180);
+		
 	}
 	if (y == 500) {
 		over = true;
@@ -51,6 +59,10 @@ void UpdatePhysics(int& x, int& y, bool right, bool left, bool up,bool down, sf:
 
 
 int main() {
+	sf::RenderWindow window(sf::VideoMode(640, 480), "demo");
+
+	window.setFramerateLimit(60);
+
 	const int map_height = 8;
 	const int map_width= 10;
 	sf::String map[map_height]{
@@ -64,18 +76,8 @@ int main() {
 	"0000000000",
 	};
 
-
-
-	sf::RenderWindow window(sf::VideoMode(640, 480), "demo");
-
-	window.setFramerateLimit(60);
-
 	int x = 320;
 	int y = 280;
-
-	sf::RectangleShape shape(sf::Vector2f(20, 20));
-	shape.setPosition(x, y);
-	shape.setFillColor(sf::Color::Green);
 
 	sf::Image map_image;
 	map_image.loadFromFile("C:\\Users\\Alexandr\\Desktop\\Projects\\sfml-demo\\sfml-demo\\image.png");
@@ -83,12 +85,22 @@ int main() {
 	texture_map.loadFromImage(map_image);
 	sf::Sprite s_map(texture_map);
 
+	sf::Image image_sneak_head;
+	image_sneak_head.loadFromFile("C:\\Users\\Alexandr\\Desktop\\Projects\\sfml-demo\\sfml-demo\\sneak\\Sprite-0002.png");
+	sf::Texture texture_sneak_head;
+	texture_sneak_head.loadFromImage(image_sneak_head);
+	sf::Sprite sneak_head(texture_sneak_head);
+	sneak_head.setOrigin(16, 16);
+	
+	sneak_head.setPosition(320, 280);
+
 	bool right = false;
 	bool left = false;
 	bool up = false;
 	bool down = false;
 	int x_shape = 320;
 	int y_shape = 280;
+	int time_GameOver = 120;
 
 	sf::Text gameOver;
 	sf::Font font;
@@ -153,7 +165,13 @@ int main() {
 
 		while (current_time >= update_timestamp) {
 			update_timestamp += kUpdatePeriod;
-			UpdatePhysics(x_shape,y_shape,right, left, up, down, shape, over);
+			UpdatePhysics(x_shape,y_shape,right, left, up, down, sneak_head, over);
+			if (over == true) {
+				--time_GameOver;
+			}
+			if (time_GameOver == 0) {
+				window.close();
+			}
 		}
 		window.clear(sf::Color::White);
 		for (int i = 0; i < map_height; i++)
@@ -168,14 +186,9 @@ int main() {
 			}
 		
 		
-		window.draw(shape);
+		window.draw(sneak_head);
 		if (over == true) {
 			window.draw(gameOver);
-			sf::Clock clock;
-			if (clock.getElapsedTime() >= sf::seconds(1)) {
-				window.close();
-			}
-
 		}
 		
 		window.display();
