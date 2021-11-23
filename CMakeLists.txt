@@ -61,3 +61,13 @@ target_link_libraries(demo sfml-graphics)
 target_link_libraries(demo sfml-window)
 target_link_libraries(demo sfml-system)
 target_include_directories( demo PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/third_party/SFML/include )
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/CimeroPro.TTF
+    DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/sneak/Sprite-0001.png
+    DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)
+	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/sneak/Sprite-0002.png
+    DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)
+	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/sneak/Sprite-0003.png
+    DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/map.png
+    DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/)

@@ -61,15 +61,15 @@ int main() {
 
 
 	sf::Image map_image;
-	map_image.loadFromFile("C:\\Users\\Alexandr\\Desktop\\Projects\\sfml-demo\\sfml-demo\\map.png");
+	map_image.loadFromFile("map.png");
 	sf::Texture texture_map;
 	texture_map.loadFromImage(map_image);
 	sf::Sprite map(texture_map);
 
 	sf::Image image_sneak_head;
-	image_sneak_head.loadFromFile("C:\\Users\\Alexandr\\Desktop\\Projects\\sfml-demo\\sfml-demo\\sneak\\Sprite-0002.png");
+	image_sneak_head.loadFromFile("Sprite-0002.png");
 	sf::Image image_sneak_body;
-	image_sneak_body.loadFromFile("C:\\Users\\Alexandr\\Desktop\\Projects\\sfml-demo\\sfml-demo\\sneak\\Sprite-0001.png");
+	image_sneak_body.loadFromFile("Sprite-0001.png");
 	sf::Texture texture_sneak_body;
 	texture_sneak_body.loadFromImage(image_sneak_body);
 	sf::Texture texture_sneak_head;
@@ -84,7 +84,7 @@ int main() {
 
 	sf::Text gameOver;
 	sf::Font font;
-	font.loadFromFile("C:\\Users\\Alexandr\\Desktop\\Projects\\sfml-demo\\sfml-demo\\CimeroPro.ttf");
+	font.loadFromFile("CimeroPro.ttf");
 	gameOver.setFont(font);
 	gameOver.setString("GameOver");
 	gameOver.setCharacterSize(50);
@@ -108,7 +108,7 @@ int main() {
 	y_food =  rand() % 20;
 
 	sf::Image image_food;
-	image_food.loadFromFile("C:\\Users\\Alexandr\\Desktop\\Projects\\sfml-demo\\sfml-demo\\sneak\\Sprite-0003.png");
+	image_food.loadFromFile("Sprite-0003.png");
 	sf::Texture texture_food;
 	texture_food.loadFromImage(image_food);
 	sf::Sprite food(texture_food);
