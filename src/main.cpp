@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include "windows.h"
+#include <SFML/Audio.hpp>
 
 
 using Clock = std::chrono::steady_clock;
@@ -57,10 +58,10 @@ void UpdatePhysics(sf::Sprite& sneak_head) {
 		sneak_pos[0].x= 0; 
 	if (sneak_pos[0].x < 0) 
 		sneak_pos[0].x = map_W - 1;
-	if (sneak_pos[0].y > map_H) 
+	if (sneak_pos[0].y > map_H - 1) 
 		sneak_pos[0].y = 0;  
 	if (sneak_pos[0].y < 0) 
-		sneak_pos[0].y = map_H;
+		sneak_pos[0].y = map_H - 1;
 	for (int i = 1; i < score; i++) {
 		if (sneak_pos[0].x == sneak_pos[i].x && sneak_pos[0].y == sneak_pos[i].y)
 			over = true;
@@ -106,6 +107,15 @@ int main() {
 	Score.setStyle(sf::Text::Bold | sf::Text::Underlined);
 	Score.setPosition(26, 22);
 
+	sf::SoundBuffer rew_buffer;
+	rew_buffer.loadFromFile("rew.wav");
+	sf::Sound rew(rew_buffer);
+
+	sf::SoundBuffer dead_buffer;
+	dead_buffer.loadFromFile("dead.wav");
+	sf::Sound dead(dead_buffer);
+
+	
 
 	int x_food;
 	int y_food;
@@ -162,7 +172,7 @@ int main() {
 			++score;
 			x_food =  rand() % map_W;
 			y_food =  rand() % map_H;
-			
+			rew.play();
 
 		}
 
@@ -175,7 +185,9 @@ int main() {
 			if (over == false)
 				UpdatePhysics(sneak_head);
 			if (over == true) {
+				dead.play();
 				--time_GameOver;
+
 			}
 			if (time_GameOver == 0) {
 				window.close();
