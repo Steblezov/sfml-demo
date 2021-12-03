@@ -16,7 +16,7 @@ inline Timestamp Now() { return Clock::now(); }
 sf::Vector2i sneak_pos[200];
 
 int dir = 4;
-int score = 1;
+int score = 3;
 bool over = false;
 const int map_H = 20;
 const int map_W = 27;
@@ -130,7 +130,7 @@ int main() {
 	sf::Clock clock;
 	float timer = 0, delay = 0.09;
 
-	
+	bool restart = false;
 	while (window.isOpen()) {
 		float time = clock.getElapsedTime().asSeconds();
 		clock.restart();
@@ -190,7 +190,9 @@ int main() {
 
 			}
 			if (time_GameOver == 0) {
-				window.close();
+				time_GameOver = 10;
+				over = false;
+				score = 3;
 			}
 
 		}
@@ -205,7 +207,8 @@ int main() {
 		
 
 		if (over == true) {
-			window.draw(gameOver);
+			if (time_GameOver != 0)
+				window.draw(gameOver);
 		}
 		
 		for (int i = 0; i < score; ++i) {
