@@ -122,9 +122,22 @@ int main() {
 	x_food =  rand() % map_W;
 	y_food =  rand() % map_H;
 
+
+	int x_green_food;
+	int y_green_food;
+	x_green_food = rand() % map_W;
+	y_green_food = rand() % map_H;
+	int green_food_time = rand() % 60;
+	int green_food_time0 = 0;
+	int time_green_food = 25;
+
 	sf::Texture texture_food;
 	texture_food.loadFromFile("Sprite-0003.png");
 	sf::Sprite food(texture_food);
+
+	sf::Texture texture_green_food;
+	texture_green_food.loadFromFile("greenfood.png");
+	sf::Sprite green_food(texture_green_food);
 	
 
 	sf::Clock clock;
@@ -173,14 +186,30 @@ int main() {
 			x_food =  rand() % map_W;
 			y_food =  rand() % map_H;
 			rew.play();
+		}
+		if (time_green_food == 0) {
+			time_green_food = 25;
+			green_food_time0 = 0;
+		}
+		if (sneak_pos[0].x == x_green_food && sneak_pos[0].y == y_green_food && green_food_time0 == green_food_time) {
+			score += 3;
+			x_green_food = rand() % map_W;
+			y_green_food = rand() % map_H;
+			green_food_time0 = 0;
+			rew.play();
 
 		}
-
-		food.setPosition(x_food * 24, y_food * 24);
+		green_food.setPosition(x_green_food * sizeS, y_green_food * sizeS);
+		food.setPosition(x_food * sizeS, y_food * sizeS);
 		Score.setString(std::to_string(score));
 
 
 		if(timer > delay){
+			if (green_food_time0 != green_food_time)
+				green_food_time0++;
+			else {
+				--time_green_food;
+			}
 			timer = 0;
 			if (over == false)
 				UpdatePhysics(sneak_head);
@@ -221,6 +250,9 @@ int main() {
 				window.draw(sneak_body);
 			}
 			
+		}
+		if (green_food_time0 == green_food_time) {
+			window.draw(green_food);
 		}
 
 		window.draw(food);
