@@ -12,61 +12,110 @@ using Duration = Timestamp::duration;
 
 inline Timestamp Now() { return Clock::now(); }
 
-
-sf::Vector2i sneak_pos[200];
-
-int dir = 4;
 int score = 3;
 bool over = false;
 const int map_H = 20;
 const int map_W = 27;
 const int sizeS = 24;
 
-void UpdatePhysics(sf::Sprite& sneak_head) {
-	for (int i = score; i > 0; --i) {
-		sneak_pos[i].x = sneak_pos[i - 1].x;
-		sneak_pos[i].y = sneak_pos[i - 1].y;
+class Sneak {
+public:
+	Sneak(int length) {
+		dir_ = 4;
+		length_ = length;
+		texture_sneak_body_.loadFromFile("Sprite-0001.png");
+		texture_sneak_head_.loadFromFile("Sprite-0002.png");
 	}
 
-	switch (dir) {
-	case 1:
-		sneak_pos[0].x += 1;
-		sneak_head.setOrigin(12, 12);
-		sneak_head.setRotation(90);
-		sneak_head.setOrigin(0, 24);
-		break;
-	case  2:
-		sneak_pos[0].x -= 1;
-		sneak_head.setOrigin(12, 12);
-		sneak_head.setRotation(-90);
-		sneak_head.setOrigin(24, 0);
-		break;
-	case 3:
-		sneak_pos[0].y -= 1;
-		sneak_head.setOrigin(12, 12);
-		sneak_head.setRotation(360);
-		sneak_head.setOrigin(0, 0);
-		break;
-	case 4:
-		sneak_pos[0].y += 1;
-		sneak_head.setOrigin(12, 12);
-		sneak_head.setRotation(-180);
-		sneak_head.setOrigin(24, 24);
-		break;
+	void UpdatePhysics() {
+		for (int i = length_; i > 0; --i) {
+			sneak_pos_[i].x = sneak_pos_[i - 1].x;
+			sneak_pos_[i].y = sneak_pos_[i - 1].y;
+		}
+
+		switch (dir_) {
+		case 1:
+			sneak_pos_[0].x += 1;
+			break;
+		case  2:
+			sneak_pos_[0].x -= 1;
+			break;
+		case 3:
+			sneak_pos_[0].y -= 1;
+			break;
+		case 4:
+			sneak_pos_[0].y += 1;
+			break;
+		}
+		if (sneak_pos_[0].x > map_W - 1)
+			sneak_pos_[0].x = 0;
+		if (sneak_pos_[0].x < 0)
+			sneak_pos_[0].x = map_W - 1;
+		if (sneak_pos_[0].y > map_H - 1)
+			sneak_pos_[0].y = 0;
+		if (sneak_pos_[0].y < 0)
+			sneak_pos_[0].y = map_H - 1;
+		for (int i = 1; i < length_; i++) {
+			if (sneak_pos_[0].x == sneak_pos_[i].x && sneak_pos_[0].y == sneak_pos_[i].y)
+				over = true;
+		}
 	}
-	if (sneak_pos[0].x > map_W - 1)
-		sneak_pos[0].x= 0; 
-	if (sneak_pos[0].x < 0) 
-		sneak_pos[0].x = map_W - 1;
-	if (sneak_pos[0].y > map_H - 1) 
-		sneak_pos[0].y = 0;  
-	if (sneak_pos[0].y < 0) 
-		sneak_pos[0].y = map_H - 1;
-	for (int i = 1; i < score; i++) {
-		if (sneak_pos[0].x == sneak_pos[i].x && sneak_pos[0].y == sneak_pos[i].y)
-			over = true;
+	void Draw(sf::RenderWindow* window)const {
+		sf::Sprite sneak_head(texture_sneak_head_);
+		sf::Sprite sneak_body(texture_sneak_body_);
+		sneak_head.setRotation(-180);  // TODO: discus
+		switch (dir_) {
+		case 1:
+			sneak_head.setOrigin(12, 12);
+			sneak_head.setRotation(90);
+			sneak_head.setOrigin(0, 24);
+			break;
+		case  2:
+			sneak_head.setOrigin(12, 12);
+			sneak_head.setRotation(-90);
+			sneak_head.setOrigin(24, 0);
+			break;
+		case 3:
+			sneak_head.setOrigin(12, 12);
+			sneak_head.setRotation(360);
+			sneak_head.setOrigin(0, 0);
+			break;
+		case 4:
+			sneak_head.setOrigin(12, 12);
+			sneak_head.setRotation(-180);
+			sneak_head.setOrigin(24, 24);
+			break;
+		}
+		for (int i = 0; i < length_; ++i) {
+			if (i == 0) {
+				sneak_head.setPosition(sneak_pos_[i].x * sizeS, sneak_pos_[i].y * sizeS);
+				window->draw(sneak_head);
+			}
+			else {
+				sneak_body.setPosition(sneak_pos_[i].x * sizeS, sneak_pos_[i].y * sizeS);
+				window->draw(sneak_body);
+			}
+
+		}
 	}
-}
+	const sf::Vector2i& SneakHead()const {
+		return sneak_pos_[0];
+	}
+	void SetLength(int n) {
+		length_ = n;
+	}
+	void SetDir(int dir) {
+		dir_ = dir;
+
+	}
+private:
+	sf::Vector2i sneak_pos_[200];
+    int dir_;
+	int length_;
+	sf::Texture texture_sneak_body_;
+	sf::Texture texture_sneak_head_;
+};
+
 
 
 int main() {
@@ -79,13 +128,7 @@ int main() {
 	texture_map.loadFromFile("map.png");
 	sf::Sprite map(texture_map);
 
-	sf::Texture texture_sneak_body;
-	texture_sneak_body.loadFromFile ("Sprite-0001.png");
-	sf::Texture texture_sneak_head;
-	texture_sneak_head.loadFromFile("Sprite-0002.png");
-	sf::Sprite sneak_head(texture_sneak_head);
-	sf::Sprite sneak_body(texture_sneak_body);
-	sneak_head.setRotation(-180);
+	Sneak sneak(score);
 	
 	int time_GameOver = 10;
 
@@ -114,8 +157,6 @@ int main() {
 	sf::SoundBuffer dead_buffer;
 	dead_buffer.loadFromFile("dead.wav");
 	sf::Sound dead(dead_buffer);
-
-	
 
 	int x_food;
 	int y_food;
@@ -162,27 +203,23 @@ int main() {
 					window.close();
 				}
 				if (event.key.code == sf::Keyboard::Right) {
-					dir = 1;
-					
+					sneak.SetDir(1);
 				}
 				if (event.key.code == sf::Keyboard::Left) {
-					dir = 2;
+					sneak.SetDir(2);
 				}
 				if (event.key.code == sf::Keyboard::Up) {
-					dir = 3;
-					
+					sneak.SetDir(3);
 				}
 				if (event.key.code == sf::Keyboard::Down) {
-					dir = 4;
-					
+					sneak.SetDir(4);
 				}
 			}
-
-
-
 		}
-		if (sneak_pos[0].x == x_food && sneak_pos[0].y == y_food) {
+
+		if (sneak.SneakHead().x == x_food && sneak.SneakHead().y == y_food) {
 			++score;
+			sneak.SetLength(score);
 			x_food =  rand() % map_W;
 			y_food =  rand() % map_H;
 			rew.play();
@@ -191,8 +228,9 @@ int main() {
 			time_green_food = 25;
 			green_food_time0 = 0;
 		}
-		if (sneak_pos[0].x == x_green_food && sneak_pos[0].y == y_green_food && green_food_time0 == green_food_time) {
+		if (sneak.SneakHead().x == x_green_food && sneak.SneakHead().y == y_green_food && green_food_time0 == green_food_time) {
 			score += 3;
+			sneak.SetLength(score);
 			x_green_food = rand() % map_W;
 			y_green_food = rand() % map_H;
 			green_food_time0 = 0;
@@ -212,7 +250,7 @@ int main() {
 			}
 			timer = 0;
 			if (over == false)
-				UpdatePhysics(sneak_head);
+				sneak.UpdatePhysics();
 			if (over == true) {
 				dead.play();
 				--time_GameOver;
@@ -222,6 +260,7 @@ int main() {
 				time_GameOver = 10;
 				over = false;
 				score = 3;
+				sneak.SetLength(3);
 			}
 
 		}
@@ -233,24 +272,13 @@ int main() {
 				window.draw(map);
 			}
 
-		
+		sneak.Draw(&window);
 
 		if (over == true) {
 			if (time_GameOver != 0)
 				window.draw(gameOver);
 		}
 		
-		for (int i = 0; i < score; ++i) {
-			if (i == 0) {
-				sneak_head.setPosition(sneak_pos[i].x* sizeS , sneak_pos[i].y * sizeS );
-				window.draw(sneak_head);
-			}
-			else {
-				sneak_body.setPosition(sneak_pos[i].x * sizeS, sneak_pos[i].y * sizeS);
-				window.draw(sneak_body);
-			}
-			
-		}
 		if (green_food_time0 == green_food_time) {
 			window.draw(green_food);
 		}
