@@ -24,12 +24,16 @@ if (MSVC)
 endif()
 
 set_output_directories(${CMAKE_BINARY_DIR}/out)
+set(HEADERS
+    include/sneak.h
+)
 
 set(SOURCES
     src/main.cpp
+    src/sneak.cpp
 )
 
-add_executable(demo ${SOURCES})
+add_executable(demo ${SOURCES} ${HEADERS})
 target_include_directories(demo PUBLIC include)
 
 # SFML
