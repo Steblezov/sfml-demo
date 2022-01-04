@@ -25,12 +25,13 @@ endif()
 
 set_output_directories(${CMAKE_BINARY_DIR}/out)
 set(HEADERS
-    include/sneak.h
+    include/snake.h
+    include/constants.h
 )
 
 set(SOURCES
     src/main.cpp
-    src/sneak.cpp
+    src/snake.cpp
 )
 
 add_executable(demo ${SOURCES} ${HEADERS})

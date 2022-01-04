@@ -1,10 +1,11 @@
-#include<iostream>
-#include<SFML/Graphics.hpp>
+#include <iostream>
+#include <SFML/Graphics.hpp>
 #include <chrono>
 #include <thread>
 #include "windows.h"
 #include <SFML/Audio.hpp>
-#include "sneak.h"
+#include "snake.h"
+#include "constants.h"
 
 
 using Clock = std::chrono::steady_clock;
@@ -15,10 +16,6 @@ inline Timestamp Now() { return Clock::now(); }
 
 int score = 3;
 bool over = false;
-const int map_H = 20;
-const int map_W = 27;
-const int sizeS = 24;
-
 
 int main() {
 	srand(time(0));
@@ -70,9 +67,9 @@ int main() {
 	int y_green_food;
 	x_green_food = rand() % map_W;
 	y_green_food = rand() % map_H;
-	int green_food_time = rand() % 60;
-	int green_food_time0 = 0;
-	int time_green_food = 25;
+	int green_food_time0 = rand() % 60;
+	int green_food_time1 = 0;
+	int green_food_time2 = 25;
 
 	sf::Texture texture_food;
 	texture_food.loadFromFile("Sprite-0003.png");
@@ -126,29 +123,29 @@ int main() {
 			y_food = rand() % map_H;
 			rew.play();
 		}
-		if (time_green_food == 0) {
-			time_green_food = 25;
-			green_food_time0 = 0;
+		if (green_food_time2 == 0) {
+			green_food_time2 = 25;
+			green_food_time1 = 0;
 		}
-		if (snake.SnakeHead().x == x_green_food && snake.SnakeHead().y == y_green_food && green_food_time0 == green_food_time) {
+		if (snake.SnakeHead().x == x_green_food && snake.SnakeHead().y == y_green_food && green_food_time1 == green_food_time0) {
 			score += 3;
 			snake.SetLength(score);
 			x_green_food = rand() % map_W;
 			y_green_food = rand() % map_H;
-			green_food_time0 = 0;
+			green_food_time1 = 0;
 			rew.play();
-
 		}
+
 		green_food.setPosition(x_green_food * sizeS, y_green_food * sizeS);
 		food.setPosition(x_food * sizeS, y_food * sizeS);
 		Score.setString(std::to_string(score));
 
 
 		if (timer > delay) {
-			if (green_food_time0 != green_food_time)
-				green_food_time0++;
+			if (green_food_time1 != green_food_time0)
+				green_food_time1++;
 			else {
-				--time_green_food;
+				--green_food_time2;
 			}
 			timer = 0;
 			if (over == false)
@@ -181,7 +178,7 @@ int main() {
 				window.draw(gameOver);
 		}
 
-		if (green_food_time0 == green_food_time) {
+		if (green_food_time0 == green_food_time1) {
 			window.draw(green_food);
 		}
 

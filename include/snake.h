@@ -1,6 +1,6 @@
 #pragma once
-#include<SFML/Graphics.hpp>
-
+#include <SFML/Graphics.hpp>
+#include "constants.h"
 
 class Snake {
 public:
@@ -22,7 +22,4 @@ private:
 	int length_;
 	sf::Texture texture_snake_body_;
 	sf::Texture texture_snake_head_;
-	const int map_H = 20;
-	const int map_W = 27;
-	const int sizeS = 24;
 };
