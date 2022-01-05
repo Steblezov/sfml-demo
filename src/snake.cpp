@@ -44,9 +44,9 @@ void Snake::UpdatePhysics(bool& over) {
 void Snake::Draw(sf::RenderWindow* window)const {
 	sf::Sprite snake_head(texture_snake_head_);
 	sf::Sprite snake_body(texture_snake_body_);
-	snake_head.setRotation(-180);  // TODO: discus
+	
+	snake_head.setOrigin(12, 12);
 	switch (dir_) {
-		snake_head.setOrigin(12, 12);
 	case 1:
 		snake_head.setRotation(90);
 		snake_head.setOrigin(0, 24);
