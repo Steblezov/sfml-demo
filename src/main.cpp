@@ -60,7 +60,8 @@ int main() {
 	rew_buffer.loadFromFile("rew.wav");
 	sf::Sound rew(rew_buffer);
 
-	Food food;
+	Food food(1);
+	Food green_food(2);
 
 	int green_food_time0 = rand() % 60;
 	int green_food_time1 = 0;
@@ -113,13 +114,13 @@ int main() {
 			green_food_time2 = 25;
 			green_food_time1 = 0;
 			green_food_time0 = rand() % 60;
-			food.UpdateGheenFood();
+			green_food.UpdateFood();
 		}
-		if (snake.SnakeHead().x == food.GreenFoodPos().x && snake.SnakeHead().y == food.GreenFoodPos().y && green_food_time1 == green_food_time0 && green_food_time2 != 0) {
+		if (snake.SnakeHead().x == green_food.FoodPos().x && snake.SnakeHead().y == green_food.FoodPos().y && green_food_time1 == green_food_time0 && green_food_time2 != 0) {
 			score += 3;
 			snake.SetLength(score);
 			green_food_time1 = 0;
-			food.UpdateGheenFood();
+			green_food.UpdateFood();
 			rew.play();
 		}
 
@@ -163,7 +164,7 @@ int main() {
 		}
 
 		if (green_food_time0 == green_food_time1) {
-			food.DrawGreenFood(&window);
+			green_food.DrawFood(&window);
 		}
 
 		food.DrawFood(&window);
