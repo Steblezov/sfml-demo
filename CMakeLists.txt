@@ -27,11 +27,13 @@ set_output_directories(${CMAKE_BINARY_DIR}/out)
 set(HEADERS
     include/snake.h
     include/constants.h
+    include/food.h
 )
 
 set(SOURCES
     src/main.cpp
     src/snake.cpp
+    src/food.cpp
 )
 
 add_executable(demo ${SOURCES} ${HEADERS})

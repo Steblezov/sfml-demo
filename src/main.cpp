@@ -6,6 +6,9 @@
 #include <SFML/Audio.hpp>
 #include "snake.h"
 #include "constants.h"
+#include "food.h"
+
+
 
 
 using Clock = std::chrono::steady_clock;
@@ -49,35 +52,19 @@ int main() {
 	Score.setStyle(sf::Text::Bold | sf::Text::Underlined);
 	Score.setPosition(26, 22);
 
-	sf::SoundBuffer rew_buffer;
-	rew_buffer.loadFromFile("rew.wav");
-	sf::Sound rew(rew_buffer);
-
 	sf::SoundBuffer dead_buffer;
 	dead_buffer.loadFromFile("dead.wav");
 	sf::Sound dead(dead_buffer);
 
-	int x_food;
-	int y_food;
-	x_food = rand() % map_W;
-	y_food = rand() % map_H;
+	sf::SoundBuffer rew_buffer;
+	rew_buffer.loadFromFile("rew.wav");
+	sf::Sound rew(rew_buffer);
 
+	Food food;
 
-	int x_green_food;
-	int y_green_food;
-	x_green_food = rand() % map_W;
-	y_green_food = rand() % map_H;
 	int green_food_time0 = rand() % 60;
 	int green_food_time1 = 0;
 	int green_food_time2 = 25;
-
-	sf::Texture texture_food;
-	texture_food.loadFromFile("Sprite-0003.png");
-	sf::Sprite food(texture_food);
-
-	sf::Texture texture_green_food;
-	texture_green_food.loadFromFile("greenfood.png");
-	sf::Sprite green_food(texture_green_food);
 
 
 	sf::Clock clock;
@@ -116,30 +103,27 @@ int main() {
 			}
 		}
 
-		if (snake.SnakeHead().x == x_food && snake.SnakeHead().y == y_food) {
+		if (snake.SnakeHead().x == food.FoodPos().x && snake.SnakeHead().y == food.FoodPos().y) {
 			++score;
 			snake.SetLength(score);
-			x_food = rand() % map_W;
-			y_food = rand() % map_H;
+			food.UpdateFood();
 			rew.play();
 		}
 		if (green_food_time2 == 0) {
 			green_food_time2 = 25;
 			green_food_time1 = 0;
+			green_food_time0 = rand() % 60;
+			food.UpdateGheenFood();
 		}
-		if (snake.SnakeHead().x == x_green_food && snake.SnakeHead().y == y_green_food && green_food_time1 == green_food_time0) {
+		if (snake.SnakeHead().x == food.GreenFoodPos().x && snake.SnakeHead().y == food.GreenFoodPos().y && green_food_time1 == green_food_time0 && green_food_time2 != 0) {
 			score += 3;
 			snake.SetLength(score);
-			x_green_food = rand() % map_W;
-			y_green_food = rand() % map_H;
 			green_food_time1 = 0;
+			food.UpdateGheenFood();
 			rew.play();
 		}
 
-		green_food.setPosition(x_green_food * sizeS, y_green_food * sizeS);
-		food.setPosition(x_food * sizeS, y_food * sizeS);
 		Score.setString(std::to_string(score));
-
 
 		if (timer > delay) {
 			if (green_food_time1 != green_food_time0)
@@ -179,10 +163,10 @@ int main() {
 		}
 
 		if (green_food_time0 == green_food_time1) {
-			window.draw(green_food);
+			food.DrawGreenFood(&window);
 		}
 
-		window.draw(food);
+		food.DrawFood(&window);
 		window.draw(Score);
 		window.display();
 	}

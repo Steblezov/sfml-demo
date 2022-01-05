@@ -40,11 +40,10 @@ void Snake::UpdatePhysics(bool& over) {
 			over = true;
 	}
 }
-
 void Snake::Draw(sf::RenderWindow* window)const {
 	sf::Sprite snake_head(texture_snake_head_);
 	sf::Sprite snake_body(texture_snake_body_);
-	
+
 	snake_head.setOrigin(12, 12);
 	switch (dir_) {
 	case 1:
@@ -87,5 +86,3 @@ void Snake::SetLength(int n) {
 void Snake::SetDir(int dir) {
 	dir_ = dir;
 }
-
-
