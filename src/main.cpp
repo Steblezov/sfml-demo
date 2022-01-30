@@ -44,13 +44,12 @@ int main() {
 	gameOver.setStyle(sf::Text::Bold | sf::Text::Underlined);
 	gameOver.setPosition(320, 280);
 
-
 	sf::Text Score;
 	Score.setFont(font);
 	Score.setCharacterSize(25);
 	Score.setFillColor(sf::Color::Black);
 	Score.setStyle(sf::Text::Bold | sf::Text::Underlined);
-	Score.setPosition(26, 22);
+	Score.setPosition(26, 22); 
 
 	sf::SoundBuffer dead_buffer;
 	dead_buffer.loadFromFile("dead.wav");
@@ -61,7 +60,7 @@ int main() {
 	sf::Sound rew(rew_buffer);
 
 	Food food(true);
-	Food green_food(false);
+	Food green_food(false);	
 
 	int green_food_time0 = rand() % 60;
 	int green_food_time1 = 0;
