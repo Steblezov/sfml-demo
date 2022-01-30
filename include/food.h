@@ -4,7 +4,7 @@
 
 class Food {
 public:
-	Food(int a);
+	Food(bool reg_food);
 	const sf::Vector2i& FoodPos() const;
 	void UpdateFood();
 	void DrawFood(sf::RenderWindow* window) const;

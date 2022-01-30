@@ -60,8 +60,8 @@ int main() {
 	rew_buffer.loadFromFile("rew.wav");
 	sf::Sound rew(rew_buffer);
 
-	Food food(1);
-	Food green_food(2);
+	Food food(true);
+	Food green_food(false);
 
 	int green_food_time0 = rand() % 60;
 	int green_food_time1 = 0;

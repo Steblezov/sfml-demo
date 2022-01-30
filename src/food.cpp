@@ -1,13 +1,13 @@
 #include "food.h"
 
 
-Food::Food(int a) {
+Food::Food(bool reg_food) {
 	food_.x = rand() % map_W;
 	food_.y = rand() % map_H;
-	if (a == 1) {
+	if (reg_food == true) {
 		texture_food_.loadFromFile("Sprite-0003.png");
 	}
-	if (a == 2) {
+	if (reg_food == false) {
 		texture_food_.loadFromFile("greenfood.png");
 	}
 }
