@@ -8,15 +8,6 @@
 #include "constants.h"
 #include "food.h"
 
-
-
-
-using Clock = std::chrono::steady_clock;
-using Timestamp = Clock::time_point;
-using Duration = Timestamp::duration;
-
-inline Timestamp Now() { return Clock::now(); }
-
 int score = 3;
 bool over = false;
 
@@ -68,7 +59,7 @@ int main() {
 
 
 	sf::Clock clock;
-	float timer = 0, delay = 0.09;
+	float timer = 0, delay = 0.1;
 
 	bool restart = false;
 	while (window.isOpen()) {
